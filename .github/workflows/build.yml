@@ -47,6 +47,7 @@ jobs:
         with:
           path: /var/cache/apt/archives
           key: apt-packages-${{ runner.os }}-v1
+          save-always: true
 
       - name: Install Repo and Python
         run: |
