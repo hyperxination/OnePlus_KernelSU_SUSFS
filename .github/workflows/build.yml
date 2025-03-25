@@ -41,11 +41,36 @@ jobs:
           remove-haskell: 'true'
           remove-codeql: 'true'
 
+      # Cache APT packages
+      - name: Cache APT Packages
+        uses: actions/cache@v4
+        with:
+          path: /var/cache/apt/archives
+          key: apt-packages-${{ runner.os }}-v1
+
       - name: Install Repo and Python
         run: |
           # Install dependencies
           sudo apt update
-          sudo apt install repo python3 python-is-python3
+          sudo apt install repo python3 python-is-python3 ccache
+          echo "CCACHE_DIR=$(pwd)/ccache" >> $GITHUB_ENV
+          echo "PATH=/usr/lib/ccache:$PATH" >> $GITHUB_ENV
+
+# Configure ccache
+      - name: Configure ccache
+        run: |
+          ccache --set-config=cache_dir=$(pwd)/ccache
+          ccache --set-config=compression=true
+          ccache --set-config=sloppiness=include_file_ctime,include_file_mtime
+
+      # Cache ccache
+      - name: Cache ccache
+        uses: actions/cache@v4
+        with:
+          path: ccache
+          key: ccache-${{ inputs.model }}-${{ github.sha }}
+          restore-keys: |
+            ccache-${{ inputs.model }}-
 
       - name: Set CONFIG Environment Variable
         run: |
