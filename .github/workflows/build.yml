@@ -43,17 +43,21 @@ jobs:
 
       # Cache APT packages
       - name: Cache APT Packages
-        uses: actions/cache@v4
+        id: cache-apt
+        uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          path: /var/cache/apt/archives
-          key: apt-packages-${{ runner.os }}-v1
-          save-always: true
+          packages: repo python3 python-is-python3 ccache
+          version: 1.0
 
       - name: Install Repo and Python
+        if: steps.cache-apt.outputs.cache-hit != 'true'
         run: |
           # Install dependencies
           sudo apt update
           sudo apt install repo python3 python-is-python3 ccache
+
+      - name: Setup ccache
+        run: |
           echo "CCACHE_DIR=$(pwd)/ccache" >> $GITHUB_ENV
           echo "PATH=/usr/lib/ccache:$PATH" >> $GITHUB_ENV
 
