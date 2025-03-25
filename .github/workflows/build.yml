@@ -250,10 +250,7 @@ jobs:
           #git config --global user.name "TheWildJames"
           #git add *
           #git commit -s -a -m "getting rid of -dirty"
-          sed -i '/SKIP_MRPROPER=1 OUT_DIR=\${ANDROID_KP_OUT_DIR} .\/build\/build.sh/i \
-          export HOSTCC="/usr/bin/ccache clang"\n\
-          export HOSTCXX="/usr/bin/ccache clang++"\n\
-          export CC="/usr/bin/ccache clang"' ./kernel_platform/build/android/prepare_vendor.sh
+          sed -i 's/^HOSTCC=clang/HOSTCC=\/usr\/bin\/ccache clang/; s/^HOSTCXX=clang++/HOSTCXX=\/usr\/bin\/ccache clang++/; s/^CC=clang/CC=\/usr\/bin\/ccache clang/' ./kernel_platform/build/kernel/_setup_env.sh
           ./kernel_platform/oplus/build/oplus_build_kernel.sh ${{ inputs.soc }} gki
 
       - name: Copy Images
