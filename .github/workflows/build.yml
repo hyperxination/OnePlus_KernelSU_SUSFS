@@ -233,6 +233,11 @@ jobs:
           perl -pi -e 's{UTS_VERSION="\$\(echo \$UTS_VERSION \$CONFIG_FLAGS \$TIMESTAMP \| cut -b -\$UTS_LEN\)"}{UTS_VERSION="#1 SMP PREEMPT Sat Apr 20 04:20:00 UTC 2024"}' ./common/scripts/mkcompile_h
           perl -pi -e 's{UTS_VERSION="\$\(echo \$UTS_VERSION \$CONFIG_FLAGS \$TIMESTAMP \| cut -b -\$UTS_LEN\)"}{UTS_VERSION="#1 SMP PREEMPT Sat Apr 20 04:20:00 UTC 2024"}' ./msm-kernel/scripts/mkcompile_h
 
+      - name: Verify ccache and clang
+        run: |
+          which ccache || echo "ccache not found!"
+          which clang || echo "clang not found!"
+
       - name: Build the Kernel
         run: |
           echo "Changing to configuration directory: $CONFIG..."
@@ -245,7 +250,10 @@ jobs:
           #git config --global user.name "TheWildJames"
           #git add *
           #git commit -s -a -m "getting rid of -dirty"
-          sed -i 's|\${OPLUS_EXTRA_KBUILD_ARGS} ./kernel_platform/build/android/prepare_vendor.sh|\${OPLUS_EXTRA_KBUILD_ARGS} HOSTCC="/usr/bin/ccache clang" HOSTCXX="/usr/bin/ccache clang++" CC="/usr/bin/ccache clang" ./kernel_platform/build/android/prepare_vendor.sh|' ./kernel_platform/oplus/build/oplus_build_kernel.sh
+          sed -i '/SKIP_MRPROPER=1 OUT_DIR=\${ANDROID_KP_OUT_DIR} .\/build\/build.sh/i \
+          export HOSTCC="/usr/bin/ccache clang"\n\
+          export HOSTCXX="/usr/bin/ccache clang++"\n\
+          export CC="/usr/bin/ccache clang"' ./kernel_platform/build/android/prepare_vendor.sh
           ./kernel_platform/oplus/build/oplus_build_kernel.sh ${{ inputs.soc }} gki
 
       - name: Copy Images
