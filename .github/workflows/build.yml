@@ -241,7 +241,8 @@ jobs:
           #git config --global user.name "TheWildJames"
           #git add *
           #git commit -s -a -m "getting rid of -dirty"
-          CC="/usr/bin/ccache clang" ./kernel_platform/oplus/build/oplus_build_kernel.sh ${{ inputs.soc }} gki
+          sed -i 's|\${OPLUS_EXTRA_KBUILD_ARGS} ./kernel_platform/build/android/prepare_vendor.sh|\${OPLUS_EXTRA_KBUILD_ARGS} HOSTCC="/usr/bin/ccache clang" HOSTCXX="/usr/bin/ccache clang++" CC="/usr/bin/ccache clang" ./kernel_platform/build/android/prepare_vendor.sh|' ./kernel_platform/oplus/build/oplus_build_kernel.sh
+          ./kernel_platform/oplus/build/oplus_build_kernel.sh ${{ inputs.soc }} gki
 
       - name: Copy Images
         run: |
