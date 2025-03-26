@@ -254,6 +254,14 @@ jobs:
           export HOSTCXX="/usr/bin/ccache clang++"
           export CC="/usr/bin/ccache clang"
           sed -i 's/^HOSTCC=clang/HOSTCC=\/usr\/bin\/ccache clang/; s/^HOSTCXX=clang++/HOSTCXX=\/usr\/bin\/ccache clang++/; s/^CC=clang/CC=\/usr\/bin\/ccache clang/' ./kernel_platform/build/kernel/_setup_env.sh
+          find ./kernel_platform/common -type f -name "Makefile" -exec sed -i \
+            -e 's/^HOSTCC=clang/HOSTCC=\/usr\/bin\/ccache clang/' \
+            -e 's/^HOSTCXX=clang++/HOSTCXX=\/usr\/bin\/ccache clang++/' \
+            -e 's/^CC=clang/CC=\/usr\/bin\/ccache clang/' {} +
+          find ./kernel_platform/msm-kernel -type f -name "Makefile" -exec sed -i \
+            -e 's/^HOSTCC=clang/HOSTCC=\/usr\/bin\/ccache clang/' \
+            -e 's/^HOSTCXX=clang++/HOSTCXX=\/usr\/bin\/ccache clang++/' \
+            -e 's/^CC=clang/CC=\/usr\/bin\/ccache clang/' {} +
           ./kernel_platform/oplus/build/oplus_build_kernel.sh ${{ inputs.soc }} gki
 
       - name: Copy Images
