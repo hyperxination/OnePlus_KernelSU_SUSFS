@@ -266,8 +266,10 @@ jobs:
           #git config --global user.name "TheWildJames"
           #git add *
           #git commit -s -a -m "getting rid of -dirty"
+          ccache -z
           ./kernel_platform/oplus/build/oplus_build_kernel.sh ${{ inputs.soc }} gki
           ccache -s
+          cat /tmp/ccache.log | tail -n 50
 
       - name: Copy Images
         run: |
