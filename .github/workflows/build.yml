@@ -74,7 +74,7 @@ jobs:
           ln -s $(which ccache) llvm-objdump
           ln -s $(which ccache) llvm-readelf
           ln -s $(which ccache) llvm-strip
-          echo "PATH=~/ccache-links:$PATH" >> $GITHUB_ENV
+          echo "PATH=$HOME/ccache-links:$PATH" >> $GITHUB_ENV
 
 # Configure ccache
       - name: Configure ccache
@@ -92,6 +92,11 @@ jobs:
           key: ccache-${{ inputs.model }}-${{ github.sha }}
           restore-keys: |
             ccache-${{ inputs.model }}-
+
+      - name: Verify ccache and clang
+        run: |
+          which ccache || echo "ccache not found!"
+          which clang || echo "clang not found!"
 
       - name: Set CONFIG Environment Variable
         run: |
@@ -243,11 +248,6 @@ jobs:
           # Run perl command to modify UTS_VERSION
           perl -pi -e 's{UTS_VERSION="\$\(echo \$UTS_VERSION \$CONFIG_FLAGS \$TIMESTAMP \| cut -b -\$UTS_LEN\)"}{UTS_VERSION="#1 SMP PREEMPT Sat Apr 20 04:20:00 UTC 2024"}' ./common/scripts/mkcompile_h
           perl -pi -e 's{UTS_VERSION="\$\(echo \$UTS_VERSION \$CONFIG_FLAGS \$TIMESTAMP \| cut -b -\$UTS_LEN\)"}{UTS_VERSION="#1 SMP PREEMPT Sat Apr 20 04:20:00 UTC 2024"}' ./msm-kernel/scripts/mkcompile_h
-
-      - name: Verify ccache and clang
-        run: |
-          which ccache || echo "ccache not found!"
-          which clang || echo "clang not found!"
 
       - name: Build the Kernel
         run: |
