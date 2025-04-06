@@ -64,6 +64,17 @@ jobs:
         run: |
           echo "CCACHE_DIR=$(pwd)/ccache" >> $GITHUB_ENV
           echo "PATH=/usr/lib/ccache:/usr/local/bin:/opt/sdk-dat-arm/host/usr/bin/:$PATH" >> $GITHUB_ENV
+          mkdir -p ~/ccache-links
+          cd ~/ccache-links
+          ln -s $(which ccache) clang
+          ln -s $(which ccache) clang++
+          ln -s $(which ccache) llvm-ar
+          ln -s $(which ccache) llvm-nm
+          ln -s $(which ccache) llvm-objcopy
+          ln -s $(which ccache) llvm-objdump
+          ln -s $(which ccache) llvm-readelf
+          ln -s $(which ccache) llvm-strip
+          echo "PATH=~/ccache-links:$PATH" >> $GITHUB_ENV
 
 # Configure ccache
       - name: Configure ccache
