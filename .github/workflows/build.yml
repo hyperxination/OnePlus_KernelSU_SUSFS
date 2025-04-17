@@ -214,6 +214,7 @@ jobs:
           # Optional: Keep Reno/Cubic as alternatives
           echo "CONFIG_TCP_CONG_CUBIC=y" >> ./common/arch/arm64/configs/gki_defconfig
           echo "CONFIG_TCP_CONG_RENO=y" >> ./common/arch/arm64/configs/gki_defconfig
+          echo "CONFIG_TCP_CONG_CDG=y" >> ./common/arch/arm64/configs/gki_defconfig
           echo "CONFIG_DEFAULT_CUBIC=y" >> ./common/arch/arm64/configs/gki_defconfig
           echo 'CONFIG_DEFAULT_TCP_CONG="cubic"' >> ./common/arch/arm64/configs/gki_defconfig
           
@@ -231,7 +232,7 @@ jobs:
           echo "# CONFIG_TCP_CONG_YEAH is not set" >> ./common/arch/arm64/configs/gki_defconfig
           echo "# CONFIG_TCP_CONG_ILLINOIS is not set" >> ./common/arch/arm64/configs/gki_defconfig
           echo "# CONFIG_TCP_CONG_DCTCP is not set" >> ./common/arch/arm64/configs/gki_defconfig
-          echo "# CONFIG_TCP_CONG_CDG is not set" >> ./common/arch/arm64/configs/gki_defconfig
+          # echo "# CONFIG_TCP_CONG_CDG is not set" >> ./common/arch/arm64/configs/gki_defconfig
           
           # Enable FQ-CoDel and FQ for Queue Management
           echo "CONFIG_NET_SCH_FQ=y" >> ./common/arch/arm64/configs/gki_defconfig
