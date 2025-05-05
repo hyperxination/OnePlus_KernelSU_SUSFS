@@ -131,6 +131,23 @@ jobs:
           fi
           
           git submodule update --init --recursive
+          # Determine base version based on branch
+          if [ "${{ inputs.ksun_branch }}" == "stable" ]; then
+            BASE_VERSION=10200
+          elif [ "${{ inputs.ksun_branch }}" == "next" ]; then
+            BASE_VERSION=10200
+          elif [ "${{ inputs.ksun_branch }}" == "next-susfs" ]; then
+            BASE_VERSION=10198
+          elif [ "${{ inputs.ksun_branch }}" == "next-susfs-dev" ]; then
+            BASE_VERSION=10198
+          else
+            BASE_VERSION=10200
+          fi
+          
+          cd KernelSU-Next/kernel
+          KSU_VERSION=$(expr $(/usr/bin/git rev-list --count HEAD) "+" $BASE_VERSION)
+          echo "KSUVER=$KSU_VERSION" >> $GITHUB_ENV
+          sed -i "s/DKSU_VERSION=11998/DKSU_VERSION=${KSU_VERSION}/" Makefile
 
       - name: Apply SUSFS Patches
         run: |
@@ -151,24 +168,6 @@ jobs:
             cp ../../../kernel_patches/next/kernel-patch-susfs-v1.5.7-to-KernelSU-Next.patch ./ksun_susfs_latest.patch
             patch -p1 --forward < ksun_susfs_latest.patch || true
           fi
-          
-          # Determine base version based on branch
-          if [ "${{ inputs.ksun_branch }}" == "stable" ]; then
-            BASE_VERSION=10200
-          elif [ "${{ inputs.ksun_branch }}" == "next" ]; then
-            BASE_VERSION=10200
-          elif [ "${{ inputs.ksun_branch }}" == "next-susfs" ]; then
-            BASE_VERSION=10198
-          elif [ "${{ inputs.ksun_branch }}" == "next-susfs-dev" ]; then
-            BASE_VERSION=10198
-          else
-            BASE_VERSION=10200
-          fi
-          
-          cd ./kernel
-          KSU_VERSION=$(expr $(/usr/bin/git rev-list --count HEAD) "+" $BASE_VERSION)
-          echo "KSUVER=$KSU_VERSION" >> $GITHUB_ENV
-          sed -i "s/DKSU_VERSION=11998/DKSU_VERSION=${KSU_VERSION}/" Makefile
           
           # Change to common directory and apply SUSFS patch
           cd ../../common
