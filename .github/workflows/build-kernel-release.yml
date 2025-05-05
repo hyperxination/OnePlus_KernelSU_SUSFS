@@ -89,13 +89,13 @@ jobs:
       kernel_version: ${{ matrix.kernel_version }}
       ksun_branch: ${{ inputs.ksun_branch }}
 
-  build-batch-2:
+  # build-batch-2:
     # needs: build-batch-1
-    name: build-batch-2 (${{ matrix.model }}, ${{ matrix.soc }}, ${{ matrix.branch }}, ${{ matrix.manifest }}, ${{ matrix.android_version }}, ${{ matrix.kernel_version }}, ${{ inputs.ksun_branch }})
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
+    # name: build-batch-2 (${{ matrix.model }}, ${{ matrix.soc }}, ${{ matrix.branch }}, ${{ matrix.manifest }}, ${{ matrix.android_version }}, ${{ matrix.kernel_version }}, ${{ inputs.ksun_branch }})
+    # strategy:
+      # fail-fast: false
+      # matrix:
+        # include:
           # - model: OP13
             # soc: sun
             # branch: oneplus/sm8750
@@ -138,21 +138,21 @@ jobs:
             # manifest: oneplus_pad2_v.xml
             # android_version: android14
             # kernel_version: "6.1"
-    uses: ./.github/workflows/build.yml
-    secrets: inherit
-    with:
-      model: ${{ matrix.model }}
-      soc: ${{ matrix.soc }}
-      branch: ${{ matrix.branch }}
-      manifest: ${{ matrix.manifest }}
-      android_version: ${{ matrix.android_version }}
-      kernel_version: ${{ matrix.kernel_version }}
-      ksun_branch: ${{ inputs.ksun_branch }}
+    # uses: ./.github/workflows/build.yml
+    # secrets: inherit
+    # with:
+      # model: ${{ matrix.model }}
+      # soc: ${{ matrix.soc }}
+      # branch: ${{ matrix.branch }}
+      # manifest: ${{ matrix.manifest }}
+      # android_version: ${{ matrix.android_version }}
+      # kernel_version: ${{ matrix.kernel_version }}
+      # ksun_branch: ${{ inputs.ksun_branch }}
 
   trigger-release:
     needs:
       - build-batch-1
-      - build-batch-2
+      # - build-batch-2
     runs-on: ubuntu-latest
     if: ${{ inputs.make_release }}
     env:
