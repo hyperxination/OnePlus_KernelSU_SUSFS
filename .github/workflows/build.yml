@@ -200,7 +200,9 @@ jobs:
           cd "$CONFIG/kernel_platform/common"
           # Apply additional patch
           cp ../../../kernel_patches_additional/a14_fake_config_fix.patch ./
+          cp ../../../kernel_patches_additional/fake_defconfig ./
           patch -p1 -F 3 < a14_fake_config_fix.patch
+          ls -la ./fake_defconfig
 
       - name: Add SUSFS Configuration Settings
         run: |
@@ -239,8 +241,6 @@ jobs:
           echo "CONFIG_IP_NF_TARGET_TTL=y" >> ./common/arch/arm64/configs/gki_defconfig
           echo "CONFIG_IP6_NF_TARGET_HL=y" >> ./common/arch/arm64/configs/gki_defconfig
           echo "CONFIG_IP6_NF_MATCH_HL=y" >> ./common/arch/arm64/configs/gki_defconfig
-          
-          cp ./common/arch/arm64/configs/gki_defconfig ./common/fake_defconfig
           
           # Add additional tcp_bbr config setting
           # Enable BBR
