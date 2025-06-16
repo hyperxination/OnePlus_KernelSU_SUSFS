@@ -354,6 +354,9 @@ jobs:
           if [ -f ./kernel_platform/build_with_bazel.py ]; then
             ./kernel_platform/oplus/bazel/oplus_modules_variant.sh ${{ inputs.soc }} "$BUILD_TYPE" ""
             ./kernel_platform/build_with_bazel.py -t ${{ inputs.soc }} $BUILD_TYPE "${BAZEL_ARGS[@]}" -o "$(pwd)/out"
+            if [ "${{ inputs.model }}" == "OPAce5Pro" ] || [ "${{ inputs.model }}" == "OP13" ]; then
+                ./kernel_platform/oplus/build/oplus_rebuild_img.sh ${{ inputs.soc }} "$BUILD_TYPE"
+            fi
           else
             LTO=thin ./kernel_platform/oplus/build/oplus_build_kernel.sh ${{ inputs.soc }} "$BUILD_TYPE"
           fi
@@ -365,12 +368,19 @@ jobs:
           
           echo "Copying Image"
           cp ./out/dist/Image ../AnyKernel3/Image
-          cp ./out/dist/dtbo.img ../AnyKernel3/dtbo.img
+          if [ "${{ inputs.model }}" == "OPAce5Pro" ] || [ "${{ inputs.model }}" == "OP13" ]; then
+            cp ./out/dist/dtbo.img ../AnyKernel3/dtbo.img
+            zip -r -FF "../out.zip" ./out/*
+          fi
 
       - name: Create ZIP Files for Different Formats
         run: |
           echo "Navigating to AnyKernel3 directory..."
           cd ./AnyKernel3
+          
+          if [ "${{ inputs.model }}" == "OPAce5Pro" ] || [ "${{ inputs.model }}" == "OP13" ]; then
+            sed -i '/flash_boot/a flash_dtbo' ./anykernel.sh
+          fi
           
           # Zip the files in the AnyKernel3 directory with a new naming convention
           ZIP_NAME="${{ inputs.model }}_${{ inputs.android_version }}_${{ inputs.kernel_version }}_Next_SUSFS_AnyKernel3.zip"
