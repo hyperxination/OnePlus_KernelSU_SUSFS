@@ -365,6 +365,7 @@ jobs:
           
           echo "Copying Image"
           cp ./out/dist/Image ../AnyKernel3/Image
+          cp ./out/dist/dtbo.img ../AnyKernel3/dtbo.img
 
       - name: Create ZIP Files for Different Formats
         run: |
