@@ -370,7 +370,7 @@ jobs:
           cp ./out/dist/Image ../AnyKernel3/Image
           if [ "${{ inputs.model }}" == "OPAce5Pro" ] || [ "${{ inputs.model }}" == "OP13" ]; then
             cp ./out/dist/dtbo.img ../AnyKernel3/dtbo.img
-            zip -r -FF "../out.zip" ./out/*
+            zip -r "../out.zip" ./out/*
           fi
 
       - name: Create ZIP Files for Different Formats
