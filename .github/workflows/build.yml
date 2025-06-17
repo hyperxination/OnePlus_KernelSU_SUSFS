@@ -148,7 +148,8 @@ jobs:
           
           if [ "${{ inputs.ksun_branch }}" == "stable" ] || [ "${{ inputs.ksun_branch }}" == "next" ]; then
             echo "Applying next SUSFS patches..."
-            cp ../../../kernel_patches/next/ksun_susfs_v1.5.7_patch_12647+.patch ./ksun_susfs_latest.patch
+            # cp ../../../kernel_patches/next/ksun_susfs_v1.5.7_patch_12647+.patch ./ksun_susfs_latest.patch
+            curl -o ksun_susfs_latest.patch -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/main/0001-kernel-implement-susfs-v1.5.8-KernelSU-Next-v1.0.8.patch
             patch -p1 --forward < ksun_susfs_latest.patch || true
           fi
           
