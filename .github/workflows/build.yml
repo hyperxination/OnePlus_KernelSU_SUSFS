@@ -198,6 +198,10 @@ jobs:
           fi
           
           if [ "${{ inputs.model }}" == "OPAce5Pro" ] || [ "${{ inputs.model }}" == "OP13" ]; then
+            echo "Patching hmdird!"
+            echo 'obj-y += hmbird_patch.o' >> ./drivers/Makefile
+            curl -Ls https://raw.githubusercontent.com/Numbersf/Action-Build/refs/heads/SukiSU-Ultra/patches/hmbird_patch.patch | patch -p1 -F 3 --verbose
+            echo "Patching hmbird files!"
             curl -Ls https://github.com/schqiushui/android_kernel_common_oneplus_sm8750/commit/5d2cc9706a35f5e4b5dbbd5d247487225a46e02c.patch | patch -p1 -F 3
           else
             echo "Not OPAce5Pro / OP13, skipping fengchi patch"
@@ -352,12 +356,8 @@ jobs:
           trap "kill $MONITOR_PID" EXIT
           
           if [ -f ./kernel_platform/build_with_bazel.py ]; then
-            # ./kernel_platform/oplus/bazel/oplus_modules_variant.sh ${{ inputs.soc }} "$BUILD_TYPE" ""
-            # ./kernel_platform/build_with_bazel.py -t ${{ inputs.soc }} $BUILD_TYPE "${BAZEL_ARGS[@]}" -o "$(pwd)/out"
-            LTO=thin ./kernel_platform/oplus/build/oplus_build_kernel.sh ${{ inputs.soc }} "$BUILD_TYPE"
-            if [ "${{ inputs.model }}" == "OPAce5Pro" ] || [ "${{ inputs.model }}" == "OP13" ]; then
-                ./kernel_platform/oplus/build/oplus_rebuild_img.sh ${{ inputs.soc }} "$BUILD_TYPE"
-            fi
+            ./kernel_platform/oplus/bazel/oplus_modules_variant.sh ${{ inputs.soc }} "$BUILD_TYPE" ""
+            ./kernel_platform/build_with_bazel.py -t ${{ inputs.soc }} $BUILD_TYPE "${BAZEL_ARGS[@]}" -o "$(pwd)/out"
           else
             LTO=thin ./kernel_platform/oplus/build/oplus_build_kernel.sh ${{ inputs.soc }} "$BUILD_TYPE"
           fi
@@ -369,19 +369,11 @@ jobs:
           
           echo "Copying Image"
           cp ./out/dist/Image ../AnyKernel3/Image
-          if [ "${{ inputs.model }}" == "OPAce5Pro" ] || [ "${{ inputs.model }}" == "OP13" ]; then
-            cp ./out/dist/dtbo.img ../AnyKernel3/dtbo.img
-            zip -r "../out.zip" ./out/*
-          fi
 
       - name: Create ZIP Files for Different Formats
         run: |
           echo "Navigating to AnyKernel3 directory..."
           cd ./AnyKernel3
-          
-          if [ "${{ inputs.model }}" == "OPAce5Pro" ] || [ "${{ inputs.model }}" == "OP13" ]; then
-            sed -i '/flash_boot/a flash_dtbo' ./anykernel.sh
-          fi
           
           # Zip the files in the AnyKernel3 directory with a new naming convention
           ZIP_NAME="${{ inputs.model }}_${{ inputs.android_version }}_${{ inputs.kernel_version }}_Next_SUSFS_AnyKernel3.zip"
