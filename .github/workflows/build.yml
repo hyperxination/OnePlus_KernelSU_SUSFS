@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Setup System
+      - name: Setup Build System
         run: |
           export DEBIAN_FRONTEND=noninteractive
           echo "DEBIAN_FRONTEND=noninteractive" >> $GITHUB_ENV
@@ -66,10 +66,9 @@ jobs:
           echo "some packages purged"
           
           df -h
-
-      - name: Install Repo and Python
-        run: |
+          
           # Install dependencies
+          echo "Installing Repo and Python"
           sudo apt update
           sudo apt install -y python3 python-is-python3
           
@@ -77,15 +76,9 @@ jobs:
           curl -sSL https://storage.googleapis.com/git-repo-downloads/repo > ./git-repo/repo
           chmod a+rx ./git-repo/repo
           echo "REPO=$GITHUB_WORKSPACE/./git-repo/repo" >> $GITHUB_ENV
-
-      - name: Set CONFIG Environment Variable
-        run: |
-          CONFIG="${{ inputs.model }}"
           
-          # Set CONFIG as an environment variable for future steps
-          echo "CONFIG=$CONFIG" >> $GITHUB_ENV
-          
-          echo "CONFIG set to: $CONFIG"
+          # Set CONFIG Environment Variable
+          echo "CONFIG=${{ inputs.model }}" >> $GITHUB_ENV
 
       - name: Clone AnyKernel3 and Other Dependencies
         run: |
@@ -334,16 +327,14 @@ jobs:
             LTO=thin ./kernel_platform/oplus/build/oplus_build_kernel.sh ${{ inputs.soc }} "$BUILD_TYPE"
           fi
 
-      - name: Copy Images
+      - name: Create ZIP Files for Different Formats
         run: |
           echo "Changing to configuration directory: $CONFIG..."
           cd "$CONFIG"
           
           echo "Copying Image"
           cp ./out/dist/Image ../AnyKernel3/Image
-
-      - name: Create ZIP Files for Different Formats
-        run: |
+          
           echo "Navigating to AnyKernel3 directory..."
           cd ./AnyKernel3
           
