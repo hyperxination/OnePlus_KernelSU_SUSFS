@@ -197,9 +197,9 @@ jobs:
           cp ../../../kernel_patches/next/scope_min_manual_hooks_v1.4.patch ./manual_hooks.patch
           patch -p1 --fuzz=3 < ./manual_hooks.patch
           
-          curl -Ls https://github.com/backslashxx/mojito_krenol/commit/84cc3277f7fd1b79681d8cdaa6315717ae53404f.patch | patch -p1 -F 3 -R
+          curl -Ls https://github.com/backslashxx/mojito_krenol/commit/84cc3277f7fd1b79681d8cdaa6315717ae53404f.patch | head -n-12 | patch -p1 -F 3
           cd ../KernelSU-Next
-          curl -Ls https://github.com/backslashxx/KernelSU/commit/1fc6b935ac1a50a82c9b93872c0fc3b8c1732ce8.patch | patch -p1 -F 3 -R
+          curl -Ls https://github.com/backslashxx/KernelSU/commit/1fc6b935ac1a50a82c9b93872c0fc3b8c1732ce8.patch | patch -p1 -F 3
 
       - name: Apply Hide Stuff Patches
         run: |
