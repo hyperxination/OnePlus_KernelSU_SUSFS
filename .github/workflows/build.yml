@@ -129,8 +129,6 @@ jobs:
           else
             curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh" | bash -s ${{ inputs.ksun_branch }}
           fi
-          
-          git submodule update --init --recursive
 
       - name: Apply SUSFS Patches
         run: |
@@ -146,25 +144,11 @@ jobs:
           
           cd ./KernelSU-Next
           
-          if [ "${{ inputs.ksun_branch }}" == "stable" ] || [ "${{ inputs.ksun_branch }}" == "next" ]; then
-            echo "Applying next SUSFS patches..."
-            cp ../../../kernel_patches/next/ksun_susfs_v1.5.7_patch_12647+.patch ./ksun_susfs_latest.patch
-            patch -p1 --forward < ksun_susfs_latest.patch || true
-          fi
+          echo "Applying next SUSFS patches..."
+          cp ../../../kernel_patches/next/ksun_susfs_v1.5.7_patch_12647+.patch ./ksun_susfs_latest.patch
+          patch -p1 --forward < ksun_susfs_latest.patch || true
           
-          # Determine base version based on branch
-          case "${{ inputs.ksun_branch }}" in
-            next|stable)
-              BASE_VERSION=10200
-              ;;
-            next-susfs|next-susfs-dev)
-              BASE_VERSION=10198
-              ;;
-            *)
-              BASE_VERSION=10200
-              ;;
-          esac
-          
+          BASE_VERSION=10200
           cd ./kernel
           KSU_VERSION=$(expr $(/usr/bin/git rev-list --count HEAD) "+" $BASE_VERSION)
           echo "KSUVER=$KSU_VERSION" >> $GITHUB_ENV
@@ -308,8 +292,6 @@ jobs:
           DATESTR=$(date -u)
           perl -pi -e 's{UTS_VERSION="\$\(echo \$UTS_VERSION \$CONFIG_FLAGS \$TIMESTAMP \| cut -b -\$UTS_LEN\)"}{UTS_VERSION="#1 SMP PREEMPT $DATESTR"}' ./common/scripts/mkcompile_h
           perl -pi -e 's{UTS_VERSION="\$\(echo \$UTS_VERSION \$CONFIG_FLAGS \$TIMESTAMP \| cut -b -\$UTS_LEN\)"}{UTS_VERSION="#1 SMP PREEMPT $DATESTR"}' ./msm-kernel/scripts/mkcompile_h
-          
-          # find . -type f -exec sed -i 's/\(make\s\+-C[^\n]*\)\s\+/\1 -j$(nproc) /g' {} +
 
       - name: Build the Kernel
         run: |
@@ -359,12 +341,6 @@ jobs:
           
           echo "Copying Image"
           cp ./out/dist/Image ../AnyKernel3/Image
-          if [ "${{ inputs.model }}" == "OPAce5Pro" ]; then
-            cp ./out/dist/dtbo.img ../AnyKernel3/
-            cp ./out/dist/system_dlkm.erofs.img ../AnyKernel3/system_dlkm.img
-            # cp ./out/dist/vendor_dlkm.img ../AnyKernel3/
-            # cp ./out/dist/vendor_boot.img ../AnyKernel3/
-          fi
 
       - name: Create ZIP Files for Different Formats
         run: |
