@@ -369,7 +369,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: kernel-${{ env.CONFIG }}
-          path: "${{ env.CONFIG }}/AnyKernel3/*"
+          path: "./AnyKernel3/*"
 
       - name: Upload Build Logs
         uses: actions/upload-artifact@v4
