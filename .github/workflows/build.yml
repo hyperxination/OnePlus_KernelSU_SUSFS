@@ -161,6 +161,8 @@ jobs:
           patch -p1 --forward < ksun_susfs_latest.patch || true
           # [PATCH] hunt from start_stack
           curl -Ls https://github.com/backslashxx/KernelSU/commit/939f0fb1398355e18280a685f5944aad8052a372.patch  | patch -p1 -F 3
+          # add counter
+          curl -Ls https://github.com/backslashxx/KernelSU/commit/e306700b29332e9e3e8046c81cc0b3690ef3e59d.patch | sed '1,56d' | patch -p1 -F 3
           
           
           # Change to common directory and apply SUSFS patch
