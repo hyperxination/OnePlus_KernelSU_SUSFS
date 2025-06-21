@@ -151,8 +151,7 @@ jobs:
               cp ../../../kernel_patches/next/ksun_susfs_v1.5.7_patch_12647+.patch ./ksun_susfs_latest.patch
               ;;
             "v1.5.8")
-              # cp ../../../kernel_patches/next/0001-kernel-implement-susfs-v1.5.8-KernelSU-Next-v1.0.8.patch ./ksun_susfs_latest.patch
-              curl -o ksun_susfs_latest.patch -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/main/0001-kernel-implement-susfs-v1.5.8-KernelSU-Next-v1.0.8.patch
+              cp ../../../kernel_patches/next/0001-kernel-implement-susfs-v1.5.8-KernelSU-Next-v1.0.8.patch ./ksun_susfs_latest.patch
               ;;
             *)
               echo "Invalid version: $susfs_version"
@@ -160,6 +159,8 @@ jobs:
               ;;
           esac
           patch -p1 --forward < ksun_susfs_latest.patch || true
+          # [PATCH] hunt from start_stack
+          curl -Ls https://github.com/backslashxx/KernelSU/commit/939f0fb1398355e18280a685f5944aad8052a372.patch  | patch -p1 -F 3
           
           
           # Change to common directory and apply SUSFS patch
@@ -196,16 +197,6 @@ jobs:
           echo "Applying KSUN Hooks..."
           cp ../../../kernel_patches/next/scope_min_manual_hooks_v1.4.patch ./manual_hooks.patch
           patch -p1 --fuzz=3 < ./manual_hooks.patch
-          
-          curl -Ls https://github.com/backslashxx/mojito_krenol/commit/84cc3277f7fd1b79681d8cdaa6315717ae53404f.patch | head -n-12 | patch -p1 -F 3
-          cd ../KernelSU-Next
-          sed -i '1i \
-          #ifdef CONFIG_KSU_LSM_SECURITY_HOOKS \
-          #define LSM_HANDLER_TYPE static int \
-          #else \
-          #define LSM_HANDLER_TYPE int \
-          #endif' ./kernel/core_hook.c
-          curl -Ls https://github.com/backslashxx/KernelSU/commit/1fc6b935ac1a50a82c9b93872c0fc3b8c1732ce8.patch | patch -p1 -F 3
 
       - name: Apply Hide Stuff Patches
         run: |
