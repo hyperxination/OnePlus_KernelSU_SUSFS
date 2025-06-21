@@ -148,10 +148,10 @@ jobs:
           
           case "$susfs_version" in
             "v1.5.7")
-              cp ../../../kernel_patches/next/ksun_susfs_v1.5.7_patch_12647+.patch ./ksun_susfs_latest.patch
+              cp "../../../kernel_patches/next/0001-kernel-implement-susfs-v1.5.5-v1.5.7-KSUN-v1.0.8.patch" "./ksun_susfs_latest.patch"
               ;;
             "v1.5.8")
-              cp ../../../kernel_patches/next/0001-kernel-implement-susfs-v1.5.8-KernelSU-Next-v1.0.8.patch ./ksun_susfs_latest.patch
+              cp "../../../kernel_patches/next/0001-kernel-implement-susfs-v1.5.8-KernelSU-Next-v1.0.8.patch" "./ksun_susfs_latest.patch"
               ;;
             *)
               echo "Invalid version: $susfs_version"
@@ -341,7 +341,7 @@ jobs:
             ./kernel_platform/build_with_bazel.py -t ${{ inputs.soc }} $BUILD_TYPE "${BAZEL_ARGS[@]}" -o "$(pwd)/out"
           else
             cd ./kernel_platform/common/
-            make -j$(nproc --all) LLVM=1 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnuabeihf- CC=clang LD=ld.lld HOSTCC=clang HOSTLD=ld.lld O=out KCFLAGS+=-Wno-error gki_defconfig all 2>&1 | tee build_$(date +"%Y_%m_%d_%H_%M_%S").log
+            make -j$(nproc --all) LLVM=1 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnuabeihf- CC=clang HOSTCC=clang O=/home/runner/work/OnePlus_KernelSU_SUSFS/OnePlus_KernelSU_SUSFS/OP11/kernel_platform/out KCFLAGS+=-Wno-error gki_defconfig all 2>&1 | tee build_$(date +"%Y_%m_%d_%H_%M_%S").log
             # LTO=thin ./kernel_platform/oplus/build/oplus_build_kernel.sh ${{ inputs.soc }} "$BUILD_TYPE"
           fi
 
