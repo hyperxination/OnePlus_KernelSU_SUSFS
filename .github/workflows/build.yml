@@ -184,6 +184,7 @@ jobs:
               echo "Line already present. Skipping SUSFS_HIDE_SUS_MNTS_FOR_ALL_PROCS Patch."
           fi
           
+          curl -Ls https://github.com/ximi-libra-test/android_kernel_xiaomi_libra/commit/aa52855d8658cbee7f2a2e1cdb2d646efbaded59.patch | patch -p1 -F 3
           # KERNEL_VERSION="${{ inputs.kernel_version }}"
           # MIN_VERSION="5.16"
           
