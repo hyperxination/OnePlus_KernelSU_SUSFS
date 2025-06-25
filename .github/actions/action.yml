@@ -376,6 +376,8 @@ runs:
           MONITOR_PID=$!
           trap "kill $MONITOR_PID" EXIT
           
+          sed -i 's|^CLANG_PREBUILT_BIN=\(.*\)|CLANG_PREBUILT_BIN="ccache \1"|' ./kernel_platform/common/build.config.common
+          
           if [ -f ./kernel_platform/build_with_bazel.py ]; then
             ./kernel_platform/oplus/bazel/oplus_modules_variant.sh ${{ inputs.soc }} "$BUILD_TYPE" ""
             ./kernel_platform/build_with_bazel.py -t ${{ inputs.soc }} $BUILD_TYPE "${BAZEL_ARGS[@]}" -o "$(pwd)/out"
