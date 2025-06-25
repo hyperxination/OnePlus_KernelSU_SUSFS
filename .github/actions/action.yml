@@ -211,7 +211,7 @@ runs:
           
           if [ "${{ inputs.model }}" == "OPAce5Pro" ] || [ "${{ inputs.model }}" == "OP13" ]; then
             echo "Patching hmdird!"
-            curl -Ls https://github.com/Plan2241/HMBird-GKI-patch/commit/f8f3e4e33946aef6d40b9230050336909b4cc21b.patch | sed '1,12d; 37,$d' | patch -p1 -F 3 --verbose
+            curl -Ls https://raw.githubusercontent.com/Plan2241/HMBird-GKI-patch/main/boot.patch | patch -p1 -F 3 --verbose
             # echo 'obj-y += hmbird_patch.o' >> ./drivers/Makefile
             # curl -Ls https://raw.githubusercontent.com/Numbersf/Action-Build/refs/heads/SukiSU-Ultra/patches/hmbird_patch.patch | patch -p1 -F 3 --verbose
             echo "Patching hmbird files!"
