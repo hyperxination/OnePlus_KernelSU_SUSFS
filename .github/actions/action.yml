@@ -209,7 +209,7 @@ runs:
             echo "Kernel >= $MIN_VERSION, skipping ptrace patch"
           fi
           
-          if [ "${{ inputs.model }}" == "OPAce5Pro" ] || [ "${{ inputs.model }}" == "OP13" ] || [ "${{ inputs.model }}" == "OP12" ]; then
+          if [ "${{ inputs.model }}" == "OPAce5Pro" ] || [ "${{ inputs.model }}" == "OP13" ] || [ "${{ inputs.model }}" == "OP13r" ] || [ "${{ inputs.model }}" == "OP12" ]; then
             echo "Patching hmdird!"
             curl -Ls https://raw.githubusercontent.com/Numbersf/Action-Build/refs/heads/SukiSU-Ultra/patches/hmbird_patch.patch | patch -p1 -F 3 --verbose
             echo "Patching hmbird files!"
@@ -392,7 +392,7 @@ runs:
           echo "Navigating to AnyKernel3 directory..."
           cd ../AnyKernel3
           
-          if [ "${{ inputs.model }}" == "OPAce5Pro" ] || [ "${{ inputs.model }}" == "OP13" ] || [ "${{ inputs.model }}" == "OP12" ]; then
+          if [ "${{ inputs.model }}" == "OPAce5Pro" ] || [ "${{ inputs.model }}" == "OP13" ] || [ "${{ inputs.model }}" == "OP13r" ] || [ "${{ inputs.model }}" == "OP12" ]; then
             curl -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/main/ak3_hmbird_patch.patch | patch -F 3
           fi
           
