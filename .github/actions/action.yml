@@ -209,13 +209,16 @@ runs:
             echo "Kernel >= $MIN_VERSION, skipping ptrace patch"
           fi
           
+          echo "Patching hmdird!"
+          echo 'obj-y += hmbird_fdt.o' >> ./drivers/Makefile
+          curl -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/main/hmbird_fdt.c -o ./drivers/hmbird_fdt.c
           if [ "${{ inputs.model }}" == "OPAce5Pro" ] || [ "${{ inputs.model }}" == "OP13" ] || [ "${{ inputs.model }}" == "OP12" ]; then
             echo "Patching hmdird!"
             #curl -Ls https://raw.githubusercontent.com/Plan2241/HMBird-GKI-patch/main/boot.patch | patch -p1 -F 3 --verbose
             # echo 'obj-y += hmbird_patch.o' >> ./drivers/Makefile
             # curl -Ls https://raw.githubusercontent.com/Numbersf/Action-Build/refs/heads/SukiSU-Ultra/patches/hmbird_patch.patch | patch -p1 -F 3 --verbose
-            echo 'obj-y += hmbird_fdt.o' >> ./drivers/Makefile
-            curl -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/main/hmbird_fdt.c -o ./drivers/hmbird_fdt.c
+            # echo 'obj-y += hmbird_fdt.o' >> ./drivers/Makefile
+            # curl -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/main/hmbird_fdt.c -o ./drivers/hmbird_fdt.c
             echo "Patching hmbird files!"
             # curl -Ls https://github.com/schqiushui/android_kernel_common_oneplus_sm8750/commit/5d2cc9706a35f5e4b5dbbd5d247487225a46e02c.patch | patch -p1 -F 3
             cd ./kernel/sched
