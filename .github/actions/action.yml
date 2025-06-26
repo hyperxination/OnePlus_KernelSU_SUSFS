@@ -209,7 +209,7 @@ runs:
             echo "Kernel >= $MIN_VERSION, skipping ptrace patch"
           fi
           
-          if [ "${{ inputs.model }}" == "OPAce5Pro" ] || [ "${{ inputs.model }}" == "OP13" || [ "${{ inputs.model }}" == "OP12" ]; then
+          if [ "${{ inputs.model }}" == "OPAce5Pro" ] || [ "${{ inputs.model }}" == "OP13" ] || [ "${{ inputs.model }}" == "OP12" ]; then
             echo "Patching hmdird!"
             #curl -Ls https://raw.githubusercontent.com/Plan2241/HMBird-GKI-patch/main/boot.patch | patch -p1 -F 3 --verbose
             # echo 'obj-y += hmbird_patch.o' >> ./drivers/Makefile
