@@ -393,7 +393,13 @@ runs:
           cd ../AnyKernel3
           
           if [ "${{ inputs.model }}" == "OPAce5Pro" ] || [ "${{ inputs.model }}" == "OP13" ] || [ "${{ inputs.model }}" == "OP13r" ] || [ "${{ inputs.model }}" == "OP12" ]; then
-            curl -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/main/ak3_hmbird_patch.patch | patch -F 3
+            curl -LSs https://github.com/fatalcoder524/kernel_patches_additional/raw/refs/heads/main/bins/dtc -o ./tools/dtc
+            curl -LSs https://github.com/fatalcoder524/kernel_patches_additional/raw/refs/heads/main/bins/fdtdump -o ./tools/fdtdump
+            curl -LSs https://github.com/fatalcoder524/kernel_patches_additional/raw/refs/heads/main/bins/fdtget -o ./tools/fdtget
+            curl -LSs https://github.com/fatalcoder524/kernel_patches_additional/raw/refs/heads/main/bins/fdtput -o ./tools/fdtput
+            curl -LSs https://github.com/fatalcoder524/kernel_patches_additional/raw/refs/heads/main/bins/mkdtimg -o ./tools/mkdtimg
+            
+            curl -LSs https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/main/ak3_hmbird_patch.patch | patch -F 3
           fi
           
           # Zip the files in the AnyKernel3 directory with a new naming convention
