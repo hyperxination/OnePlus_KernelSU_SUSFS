@@ -193,29 +193,23 @@ runs:
           fi
           patch -p1 < 50_add_susfs_in_gki-${{ inputs.android_version }}-${{ inputs.kernel_version }}.patch || true
           
-          if ! grep -qxF '#define CMD_SUSFS_HIDE_SUS_MNTS_FOR_ALL_PROCS 0x55561' ./include/linux/susfs_def.h; then
-              curl -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/main/hide_sus_mnts_for_all_procs.patch  | patch -p1 -F 3
-          else
-              echo "Line already present. Skipping SUSFS_HIDE_SUS_MNTS_FOR_ALL_PROCS Patch."
-          fi
-          
           KERNEL_VERSION="${{ inputs.kernel_version }}"
           MIN_VERSION="5.16"
           
           if [ "$(printf '%s\n' "$KERNEL_VERSION" "$MIN_VERSION" | sort -V | head -n1)" = "$KERNEL_VERSION" ]; then
             echo "Patching ptrace!"
-            curl -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/main/ptrace.patch  | patch -p1 -F 3
+            curl -Ls https://raw.githubusercontent.com/WildKernels/kernel_patches/7d6fdf0282851ab2dfcaedfe79503ae255c4ae47/gki_ptrace.patch  | patch -p1 -F 3
           else
             echo "Kernel >= $MIN_VERSION, skipping ptrace patch"
           fi
           
           if [ "${{ inputs.model }}" == "OPAce5Pro" ] || [ "${{ inputs.model }}" == "OP13" ]; then
             echo "Patching hmdird!"
-            curl -Ls https://raw.githubusercontent.com/WildKernels/kernel_patches/600322932b3d75a0800b29b03b3e21db8a3aa0f2/oneplus/hmbird/hmbird_kernel_patch.patch | patch -p1 -F 3 --verbose
+            curl -Ls https://raw.githubusercontent.com/WildKernels/kernel_patches/refs/heads/main/oneplus/hmbird/hmbird_kernel_patch.patch | patch -p1 -F 3 --verbose
             echo "Patching hmbird files!"
             cd ./kernel/sched
             rm -rf ext.c ext.h build_policy.c slim.h slim_sysctl.c
-            curl -Ls https://raw.githubusercontent.com/WildKernels/kernel_patches/600322932b3d75a0800b29b03b3e21db8a3aa0f2/oneplus/hmbird/hmbird_files_patch.patch | patch -p1 -F 3
+            curl -Ls https://raw.githubusercontent.com/WildKernels/kernel_patches/refs/heads/main/oneplus/hmbird/hmbird_files_patch.patch | patch -p1 -F 3
           else
             echo "Not OPAce5Pro / OP13 , skipping fengchi patch"
           fi
@@ -393,13 +387,13 @@ runs:
           cd ../AnyKernel3
           
           if [ "${{ inputs.model }}" == "OPAce5Pro" ] || [ "${{ inputs.model }}" == "OP13" ]; then
-            curl -LSs https://github.com/WildKernels/kernel_patches/raw/600322932b3d75a0800b29b03b3e21db8a3aa0f2/oneplus/hmbird/bins/dtc -o ./tools/dtc
-            curl -LSs https://github.com/WildKernels/kernel_patches/raw/600322932b3d75a0800b29b03b3e21db8a3aa0f2/oneplus/hmbird/bins/fdtdump -o ./tools/fdtdump
-            curl -LSs https://github.com/WildKernels/kernel_patches/raw/600322932b3d75a0800b29b03b3e21db8a3aa0f2/oneplus/hmbird/bins/fdtget -o ./tools/fdtget
-            curl -LSs https://github.com/WildKernels/kernel_patches/raw/600322932b3d75a0800b29b03b3e21db8a3aa0f2/oneplus/hmbird/bins/fdtput -o ./tools/fdtput
-            curl -LSs https://github.com/WildKernels/kernel_patches/raw/600322932b3d75a0800b29b03b3e21db8a3aa0f2/oneplus/hmbird/bins/mkdtimg -o ./tools/mkdtimg
+            curl -LSs https://github.com/WildKernels/kernel_patches/raw/refs/heads/main/oneplus/hmbird/bins/dtc -o ./tools/dtc
+            curl -LSs https://github.com/WildKernels/kernel_patches/raw/refs/heads/main/oneplus/hmbird/bins/fdtdump -o ./tools/fdtdump
+            curl -LSs https://github.com/WildKernels/kernel_patches/raw/refs/heads/main/oneplus/hmbird/bins/fdtget -o ./tools/fdtget
+            curl -LSs https://github.com/WildKernels/kernel_patches/raw/refs/heads/main/oneplus/hmbird/bins/fdtput -o ./tools/fdtput
+            curl -LSs https://github.com/WildKernels/kernel_patches/raw/refs/heads/main/oneplus/hmbird/bins/mkdtimg -o ./tools/mkdtimg
             
-            curl -LSs https://raw.githubusercontent.com/WildKernels/kernel_patches/600322932b3d75a0800b29b03b3e21db8a3aa0f2/oneplus/hmbird/ak3_hmbird_patch.patch | patch -F 3
+            curl -LSs https://raw.githubusercontent.com/WildKernels/kernel_patches/refs/heads/main/oneplus/hmbird/ak3_hmbird_patch.patch | patch -F 3
           fi
           
           # Zip the files in the AnyKernel3 directory with a new naming convention
