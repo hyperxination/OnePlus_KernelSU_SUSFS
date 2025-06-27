@@ -209,15 +209,15 @@ runs:
             echo "Kernel >= $MIN_VERSION, skipping ptrace patch"
           fi
           
-          if [ "${{ inputs.model }}" == "OPAce5Pro" ] || [ "${{ inputs.model }}" == "OP13" ] || [ "${{ inputs.model }}" == "OP13r" ] || [ "${{ inputs.model }}" == "OP12" ]; then
+          if [ "${{ inputs.model }}" == "OPAce5Pro" ] || [ "${{ inputs.model }}" == "OP13" ]; then
             echo "Patching hmdird!"
-            curl -Ls https://raw.githubusercontent.com/Numbersf/Action-Build/refs/heads/SukiSU-Ultra/patches/hmbird_patch.patch | patch -p1 -F 3 --verbose
+            curl -Ls https://raw.githubusercontent.com/WildKernels/kernel_patches/600322932b3d75a0800b29b03b3e21db8a3aa0f2/oneplus/hmbird/hmbird_kernel_patch.patch | patch -p1 -F 3 --verbose
             echo "Patching hmbird files!"
             cd ./kernel/sched
             rm -rf ext.c ext.h build_policy.c slim.h slim_sysctl.c
-            curl -Ls https://github.com/HanKuCha/sched_ext/commit/7ab1d04d5cb622d6c32c932add617803074ec5a7.patch | patch -p1 -F 3
+            curl -Ls https://raw.githubusercontent.com/WildKernels/kernel_patches/600322932b3d75a0800b29b03b3e21db8a3aa0f2/oneplus/hmbird/hmbird_files_patch.patch | patch -p1 -F 3
           else
-            echo "Not OPAce5Pro / OP13 / OP12, skipping fengchi patch"
+            echo "Not OPAce5Pro / OP13 , skipping fengchi patch"
           fi
 
       - name: Apply KSUN Hooks
@@ -392,14 +392,14 @@ runs:
           echo "Navigating to AnyKernel3 directory..."
           cd ../AnyKernel3
           
-          if [ "${{ inputs.model }}" == "OPAce5Pro" ] || [ "${{ inputs.model }}" == "OP13" ] || [ "${{ inputs.model }}" == "OP13r" ] || [ "${{ inputs.model }}" == "OP12" ]; then
-            curl -LSs https://github.com/fatalcoder524/kernel_patches_additional/raw/refs/heads/main/bins/dtc -o ./tools/dtc
-            curl -LSs https://github.com/fatalcoder524/kernel_patches_additional/raw/refs/heads/main/bins/fdtdump -o ./tools/fdtdump
-            curl -LSs https://github.com/fatalcoder524/kernel_patches_additional/raw/refs/heads/main/bins/fdtget -o ./tools/fdtget
-            curl -LSs https://github.com/fatalcoder524/kernel_patches_additional/raw/refs/heads/main/bins/fdtput -o ./tools/fdtput
-            curl -LSs https://github.com/fatalcoder524/kernel_patches_additional/raw/refs/heads/main/bins/mkdtimg -o ./tools/mkdtimg
+          if [ "${{ inputs.model }}" == "OPAce5Pro" ] || [ "${{ inputs.model }}" == "OP13" ]; then
+            curl -LSs https://github.com/WildKernels/kernel_patches/raw/600322932b3d75a0800b29b03b3e21db8a3aa0f2/oneplus/hmbird/bins/dtc -o ./tools/dtc
+            curl -LSs https://github.com/WildKernels/kernel_patches/raw/600322932b3d75a0800b29b03b3e21db8a3aa0f2/oneplus/hmbird/bins/fdtdump -o ./tools/fdtdump
+            curl -LSs https://github.com/WildKernels/kernel_patches/raw/600322932b3d75a0800b29b03b3e21db8a3aa0f2/oneplus/hmbird/bins/fdtget -o ./tools/fdtget
+            curl -LSs https://github.com/WildKernels/kernel_patches/raw/600322932b3d75a0800b29b03b3e21db8a3aa0f2/oneplus/hmbird/bins/fdtput -o ./tools/fdtput
+            curl -LSs https://github.com/WildKernels/kernel_patches/raw/600322932b3d75a0800b29b03b3e21db8a3aa0f2/oneplus/hmbird/bins/mkdtimg -o ./tools/mkdtimg
             
-            curl -LSs https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/main/ak3_hmbird_patch.patch | patch -F 3
+            curl -LSs https://raw.githubusercontent.com/WildKernels/kernel_patches/600322932b3d75a0800b29b03b3e21db8a3aa0f2/oneplus/hmbird/ak3_hmbird_patch.patch | patch -F 3
           fi
           
           # Zip the files in the AnyKernel3 directory with a new naming convention
