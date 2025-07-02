@@ -362,6 +362,7 @@ jobs:
           
           echo "Copying Image"
           cp ./out/dist/Image ../AnyKernel3/Image
+          cp ./out/dist/vmlinux ../AnyKernel3/vmlinux
           
           echo "Navigating to AnyKernel3 directory..."
           cd ../AnyKernel3
