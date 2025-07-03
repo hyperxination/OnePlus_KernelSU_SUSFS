@@ -70,7 +70,7 @@ jobs:
           # Install dependencies
           echo "Installing Repo and Python"
           sudo apt update
-          sudo apt install -y python3 python-is-python3
+          sudo apt install -y python3 python-is-python3 llvm clang
           
           mkdir -p ./git-repo
           curl -sSL https://storage.googleapis.com/git-repo-downloads/repo > ./git-repo/repo
@@ -345,9 +345,9 @@ jobs:
             ./kernel_platform/oplus/bazel/oplus_modules_variant.sh ${{ inputs.soc }} "$BUILD_TYPE" ""
             ./kernel_platform/build_with_bazel.py -t ${{ inputs.soc }} $BUILD_TYPE "${BAZEL_ARGS[@]}" -o "$(pwd)/out"
           else
-            # cd ./kernel_platform/common/
-            # make -j$(nproc --all) LLVM=1 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnuabeihf- CC=/home/runner/work/OnePlus_KernelSU_SUSFS/OnePlus_KernelSU_SUSFS/OP11/kernel_platform/prebuilts-master/clang/host/linux-x86/clang-r450784e/bin/clang LD=/home/runner/work/OnePlus_KernelSU_SUSFS/OnePlus_KernelSU_SUSFS/OP11/kernel_platform/prebuilts-master/clang/host/linux-x86/clang-r450784e/bin/ld.lld HOSTCC=/home/runner/work/OnePlus_KernelSU_SUSFS/OnePlus_KernelSU_SUSFS/OP11/kernel_platform/prebuilts-master/clang/host/linux-x86/clang-r450784e/bin/clang HOSTLD=/home/runner/work/OnePlus_KernelSU_SUSFS/OnePlus_KernelSU_SUSFS/OP11/kernel_platform/prebuilts-master/clang/host/linux-x86/clang-r450784e/bin/ld.lld O=/home/runner/work/OnePlus_KernelSU_SUSFS/OnePlus_KernelSU_SUSFS/OP11/kernel_platform/out KCFLAGS+=-Wno-error gki_defconfig all 2>&1 | tee build_$(date +"%Y_%m_%d_%H_%M_%S").log
-            LTO=thin ./kernel_platform/oplus/build/oplus_build_kernel.sh ${{ inputs.soc }} "$BUILD_TYPE"
+            cd ./kernel_platform/common/
+            make -j$(nproc --all) LLVM=1 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnuabeihf- CC=/home/runner/work/OnePlus_KernelSU_SUSFS/OnePlus_KernelSU_SUSFS/OP11/kernel_platform/prebuilts-master/clang/host/linux-x86/clang-r450784e/bin/clang LD=/home/runner/work/OnePlus_KernelSU_SUSFS/OnePlus_KernelSU_SUSFS/OP11/kernel_platform/prebuilts-master/clang/host/linux-x86/clang-r450784e/bin/ld.lld HOSTCC=/home/runner/work/OnePlus_KernelSU_SUSFS/OnePlus_KernelSU_SUSFS/OP11/kernel_platform/prebuilts-master/clang/host/linux-x86/clang-r450784e/bin/clang HOSTLD=/home/runner/work/OnePlus_KernelSU_SUSFS/OnePlus_KernelSU_SUSFS/OP11/kernel_platform/prebuilts-master/clang/host/linux-x86/clang-r450784e/bin/ld.lld O=/home/runner/work/OnePlus_KernelSU_SUSFS/OnePlus_KernelSU_SUSFS/OP11/kernel_platform/out KCFLAGS+=-Wno-error gki_defconfig all 2>&1 | tee build_$(date +"%Y_%m_%d_%H_%M_%S").log
+            # LTO=thin ./kernel_platform/oplus/build/oplus_build_kernel.sh ${{ inputs.soc }} "$BUILD_TYPE"
           fi
 
       - name: Create ZIP Files for Different Formats
