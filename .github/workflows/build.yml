@@ -109,6 +109,7 @@ jobs:
           # Sync repo and apply patches
           $REPO --version
           $REPO --trace sync -c --no-clone-bundle --no-tags --optimized-fetch -j$(nproc --all) --fail-fast
+          ls /home/runner/work/OnePlus_KernelSU_SUSFS/OnePlus_KernelSU_SUSFS/OP11/kernel_platform/prebuilts-master/clang/host/linux-x86/clang-r450784e/bin/
       
       - name: Add KernelSU Next
         run: |
