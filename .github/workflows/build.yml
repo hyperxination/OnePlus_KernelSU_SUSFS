@@ -135,7 +135,7 @@ jobs:
           cp ../../susfs4ksu/kernel_patches/fs/* ./common/fs/
           cp ../../susfs4ksu/kernel_patches/include/linux/* ./common/include/linux/
           
-          curl -o ./common/fs/susfs.c -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/main/susfs_test/susfs_debug.c
+          # curl -o ./common/fs/susfs.c -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/main/susfs_test/susfs_debug.c
           
           cd ./KernelSU-Next
           
@@ -161,12 +161,6 @@ jobs:
               ;;
           esac
           patch -p1 --forward < ksun_susfs_latest.patch || true
-          # # [PATCH] hunt from start_stack
-          # echo "[PATCH] hunt from start_stack"
-          # curl -Ls https://github.com/backslashxx/KernelSU/commit/939f0fb1398355e18280a685f5944aad8052a372.patch  | patch -p1 -F 3 --verbose
-          # # add counter
-          # echo "[PATCH] hunt from start_stack - Add Counter"
-          # curl -Ls https://github.com/backslashxx/KernelSU/commit/e306700b29332e9e3e8046c81cc0b3690ef3e59d.patch | patch -p1 -F 3 --verbose
           
           # Change to common directory and apply SUSFS patch
           cd ../common
@@ -179,7 +173,7 @@ jobs:
           fi
           patch -p1 < 50_add_susfs_in_gki-${{ inputs.android_version }}-${{ inputs.kernel_version }}.patch || true
           
-          curl -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/main/susfs_test/test_kabi_5.patch | patch -p1 -F 3
+          # curl -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/main/susfs_test/test_kabi_5.patch | patch -p1 -F 3
           
           grep -C 10 "ANDROID_KABI_RESERVE(6);" ./include/linux/sched.h
           
@@ -189,16 +183,16 @@ jobs:
               echo "Line already present. Skipping SUSFS_HIDE_SUS_MNTS_FOR_ALL_PROCS Patch."
           fi
           
-          curl -Ls https://github.com/ximi-libra-test/android_kernel_xiaomi_libra/commit/aa52855d8658cbee7f2a2e1cdb2d646efbaded59.patch | patch -p1 -F 3
-          # KERNEL_VERSION="${{ inputs.kernel_version }}"
-          # MIN_VERSION="5.16"
+          # curl -Ls https://github.com/ximi-libra-test/android_kernel_xiaomi_libra/commit/aa52855d8658cbee7f2a2e1cdb2d646efbaded59.patch | patch -p1 -F 3
+          KERNEL_VERSION="${{ inputs.kernel_version }}"
+          MIN_VERSION="5.16"
           
-          # if [ "$(printf '%s\n' "$KERNEL_VERSION" "$MIN_VERSION" | sort -V | head -n1)" = "$KERNEL_VERSION" ]; then
-            # echo "Patching ptrace!"
-            # curl -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/main/ptrace.patch  | patch -p1 -F 3
-          # else
-            # echo "Kernel >= $MIN_VERSION, skipping ptrace patch"
-          # fi
+          if [ "$(printf '%s\n' "$KERNEL_VERSION" "$MIN_VERSION" | sort -V | head -n1)" = "$KERNEL_VERSION" ]; then
+            echo "Patching ptrace!"
+            curl -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/main/ptrace.patch  | patch -p1 -F 3
+          else
+            echo "Kernel >= $MIN_VERSION, skipping ptrace patch"
+          fi
 
       - name: Apply KSUN Hooks
         run: |
@@ -244,6 +238,7 @@ jobs:
           echo "CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG=y" >> ./common/arch/arm64/configs/gki_defconfig
           echo "CONFIG_KSU_SUSFS_OPEN_REDIRECT=y" >> ./common/arch/arm64/configs/gki_defconfig
           echo "CONFIG_KSU_SUSFS_SUS_SU=n" >> ./common/arch/arm64/configs/gki_defconfig
+          echo "CONFIG_KSU_SUSFS_HIDE_KSU_SUSFS_SYMBOLS=n" >> ./common/arch/arm64/configs/gki_defconfig
           
           # Add additional tmpfs config setting
           echo "CONFIG_TMPFS_XATTR=y" >> ./common/arch/arm64/configs/gki_defconfig
@@ -362,7 +357,7 @@ jobs:
           
           echo "Copying Image"
           cp ./out/dist/Image ../AnyKernel3/Image
-          cp ./out/dist/vmlinux ../AnyKernel3/vmlinux
+          # cp ./out/dist/vmlinux ../AnyKernel3/vmlinux
           
           echo "Navigating to AnyKernel3 directory..."
           cd ../AnyKernel3
