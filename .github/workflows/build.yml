@@ -109,7 +109,7 @@ jobs:
           # Sync repo and apply patches
           $REPO --version
           $REPO --trace sync -c --no-clone-bundle --no-tags --optimized-fetch -j$(nproc --all) --fail-fast
-          ls "$CONFIG/kernel_platform/prebuilts-master/clang/host/linux-x86/"
+          # ls "$CONFIG/kernel_platform/prebuilts-master/clang/host/linux-x86/"
       
       - name: Add KernelSU Next
         run: |
