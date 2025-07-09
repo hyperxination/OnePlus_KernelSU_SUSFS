@@ -20,6 +20,10 @@ on:
           - stable
           - next
         default: stable
+      susfs_branch:
+        required: true
+        type: string
+        default: "gki-android13-5.15"
 
 jobs:
   build-batch-1: # Non Bazel Builds
@@ -86,6 +90,7 @@ jobs:
       android_version: ${{ matrix.android_version }}
       kernel_version: ${{ matrix.kernel_version }}
       ksun_branch: ${{ inputs.ksun_branch }}
+      susfs_branch: ${{ inputs.susfs_branch }}
 
   # build-batch-2:
     # # needs: build-batch-1

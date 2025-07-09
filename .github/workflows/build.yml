@@ -28,6 +28,10 @@ on:
         required: true
         type: string
         default: stable
+      susfs_branch:
+        required: true
+        type: string
+        default: "gki-android13-5.15"
 
 jobs:
   build-kernel-oneplus-kernelsu-susfs:
@@ -85,7 +89,11 @@ jobs:
           echo "Cloning AnyKernel3 and other dependencies..."
           
           ANYKERNEL_BRANCH="gki-2.0"
-          SUSFS_BRANCH="gki-${{ inputs.android_version }}-${{ inputs.kernel_version }}"
+          if [[ -z "${{ inputs.susfs_branch }}" ]]; then
+            SUSFS_BRANCH="gki-${{ inputs.android_version }}-${{ inputs.kernel_version }}"
+          else
+            SUSFS_BRANCH="${{ inputs.susfs_branch }}"
+          fi
           
           # Debug print the branches
           echo "Using branch for AnyKernel3: $ANYKERNEL_BRANCH"
@@ -93,8 +101,20 @@ jobs:
           
           # Clone repositories using the branch names
           git clone https://github.com/TheWildJames/AnyKernel3.git -b "$ANYKERNEL_BRANCH"
-          git clone https://gitlab.com/simonpunk/susfs4ksu.git -b "$SUSFS_BRANCH"
           git clone https://github.com/TheWildJames/kernel_patches.git
+          
+          # Clone the repo with all branches and history (can optimize later if needed)
+          git clone https://gitlab.com/simonpunk/susfs4ksu.git
+          cd susfs4ksu || exit 1
+          
+          # Try to check if TARGET_REF is a valid branch or tag
+          if git rev-parse --verify "origin/$SUSFS_BRANCH" >/dev/null 2>&1 || git rev-parse --verify "$SUSFS_BRANCH" >/dev/null 2>&1 ; then
+            # It's a branch or commit hash
+            git checkout "$SUSFS_BRANCH"
+          else
+            echo "Error: '$TARGET_REF' is neither a valid branch/tag nor a valid commit hash."
+            exit 1
+          fi
 
       - name: Initialize and Sync Kernel Source
         run: |
@@ -137,6 +157,9 @@ jobs:
           cp ../../susfs4ksu/kernel_patches/include/linux/* ./common/include/linux/
           
           # curl -o ./common/fs/susfs.c -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/main/susfs_test/susfs_debug.c
+          cd ./common
+          curl -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/main/test_unicode.patch  | patch -p1 -F 3
+          cd ..
           
           cd ./KernelSU-Next
           
@@ -183,17 +206,12 @@ jobs:
           fi
           patch -p1 < 50_add_susfs_in_gki-${{ inputs.android_version }}-${{ inputs.kernel_version }}.patch || true
           
-          curl -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/main/susfs_test/test_kabi_2.patch | patch -p1 -F 3
-          
-          grep -C 10 "ANDROID_KABI_RESERVE(4);" ./include/linux/sched.h
-          
           if ! grep -qxF '#define CMD_SUSFS_HIDE_SUS_MNTS_FOR_ALL_PROCS 0x55561' ./include/linux/susfs_def.h; then
               curl -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/main/hide_sus_mnts_for_all_procs.patch  | patch -p1 -F 3
           else
               echo "Line already present. Skipping SUSFS_HIDE_SUS_MNTS_FOR_ALL_PROCS Patch."
           fi
           
-          # curl -Ls https://github.com/ximi-libra-test/android_kernel_xiaomi_libra/commit/aa52855d8658cbee7f2a2e1cdb2d646efbaded59.patch | patch -p1 -F 3
           KERNEL_VERSION="${{ inputs.kernel_version }}"
           MIN_VERSION="5.16"
           
