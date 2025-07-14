@@ -204,7 +204,8 @@ jobs:
               patch -p1 --forward --fuzz=3 < fix_ksud.c.patch
               cp "../../../kernel_patches/next/susfs_fix_patches/$susfs_version/fix_rules.c.patch" ./
               patch -p1 --forward --fuzz=3 < fix_rules.c.patch
-              curl -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/main/fix_sucompat.patch | patch -p1 -F 3 --verbose
+              cp "../../../kernel_patches/next/susfs_fix_patches/$susfs_version/fix_sucompat.c.patch" ./
+              patch -p1 --forward --fuzz=3 < fix_sucompat.c.patch
               ;;
             *)
               echo "Invalid version: $susfs_version"
@@ -239,6 +240,10 @@ jobs:
           else
             echo "Kernel >= $MIN_VERSION, skipping ptrace patch"
           fi
+          
+          # SusFS Expermimental Patches
+          echo "Patching susfs_dentry_null_checks!"
+          curl -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/wild-main/experimental/susfs/susfs_dentry_checks.patch  | patch -p1 -F 3
 
       - name: Apply KSUN Hooks
         run: |
