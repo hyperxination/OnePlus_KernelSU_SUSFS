@@ -190,7 +190,7 @@ jobs:
               patch -p1 --forward --fuzz=3 < fix_selinux.c.patch
               cp "../../../kernel_patches/next/susfs_fix_patches/$susfs_version/fix_ksud.c.patch" ./
               patch -p1 --forward --fuzz=3 < fix_ksud.c.patch
-              curl -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/main/fix_sucompat.patch | patch -F 3 --verbose
+              curl -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/main/fix_sucompat.patch | patch -p1 -F 3 --verbose
               ;;
             *)
               echo "Invalid version: $susfs_version"
