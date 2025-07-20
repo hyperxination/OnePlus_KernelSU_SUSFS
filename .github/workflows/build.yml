@@ -193,19 +193,28 @@ jobs:
               ;;
             "v1.5.9")
               cp ../../../susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch ./
-              patch -p1 --forward --fuzz=3 < 10_enable_susfs_for_ksu.patch  || true
-              cp "../../../kernel_patches/next/susfs_fix_patches/$susfs_version/fix_apk_sign.c.patch" ./
-              patch -p1 --forward --fuzz=3 < fix_apk_sign.c.patch
-              cp "../../../kernel_patches/next/susfs_fix_patches/$susfs_version/fix_core_hook.c.patch" ./
-              patch -p1 --forward --fuzz=3 < fix_core_hook.c.patch
-              cp "../../../kernel_patches/next/susfs_fix_patches/$susfs_version/fix_selinux.c.patch" ./
-              patch -p1 --forward --fuzz=3 < fix_selinux.c.patch
-              cp "../../../kernel_patches/next/susfs_fix_patches/$susfs_version/fix_ksud.c.patch" ./
-              patch -p1 --forward --fuzz=3 < fix_ksud.c.patch
-              cp "../../../kernel_patches/next/susfs_fix_patches/$susfs_version/fix_rules.c.patch" ./
-              patch -p1 --forward --fuzz=3 < fix_rules.c.patch
-              cp "../../../kernel_patches/next/susfs_fix_patches/$susfs_version/fix_sucompat.c.patch" ./
-              patch -p1 --forward --fuzz=3 < fix_sucompat.c.patch
+              patch -p1 --forward < 10_enable_susfs_for_ksu.patch  || true
+              
+              for file in $(find ./kernel -maxdepth 2 -name "*.rej" -printf "%f\n" | cut -d'.' -f1); do
+                  echo "Patching file: $file.c with fix_$file.c.patch"
+                  curl -Ls "https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/wild-main/next/susfs_fix_patches/v1.5.9/fix_$file.c.patch" | patch -p1 --forward
+              done
+              
+              # Fix build errors (no rejects; Still giving errors)
+              curl -Ls "https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/wild-main/next/susfs_fix_patches/v1.5.9/fix_kernel_compat.c.patch" | patch -p1 --forward
+              
+              # cp "../../../kernel_patches/next/susfs_fix_patches/$susfs_version/fix_apk_sign.c.patch" ./
+              # curl -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/wild-main/next/susfs_fix_patches/v1.5.9/fix_apk_sign.c.patch | patch -p1 --forward
+              # cp "../../../kernel_patches/next/susfs_fix_patches/$susfs_version/fix_core_hook.c.patch" ./
+              # patch -p1 --forward < fix_core_hook.c.patch
+              # cp "../../../kernel_patches/next/susfs_fix_patches/$susfs_version/fix_selinux.c.patch" ./
+              # patch -p1 --forward < fix_selinux.c.patch
+              # cp "../../../kernel_patches/next/susfs_fix_patches/$susfs_version/fix_ksud.c.patch" ./
+              # patch -p1 --forward < fix_ksud.c.patch
+              # cp "../../../kernel_patches/next/susfs_fix_patches/$susfs_version/fix_rules.c.patch" ./
+              # patch -p1 --forward < fix_rules.c.patch
+              # cp "../../../kernel_patches/next/susfs_fix_patches/$susfs_version/fix_sucompat.c.patch" ./
+              # patch -p1 --forward < fix_sucompat.c.patch
               ;;
             *)
               echo "Invalid version: $susfs_version"
@@ -241,17 +250,15 @@ jobs:
             echo "Kernel >= $MIN_VERSION, skipping ptrace patch"
           fi
           
-          # SusFS Expermimental Patches
-          echo "Patching susfs_dentry_null_checks!"
-          curl -Ls https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/wild-main/experimental/susfs/susfs_dentry_checks.patch  | patch -p1 -F 3
 
       - name: Apply KSUN Hooks
         run: |
           echo "Changing to configuration directory: $CONFIG..."
           cd "$CONFIG/kernel_platform/common"
           echo "Applying KSUN Hooks..."
-          cp ../../../kernel_patches/next/scope_min_manual_hooks_v1.4.patch ./manual_hooks.patch
-          patch -p1 --fuzz=3 < ./manual_hooks.patch
+          # cp ../../../kernel_patches/next/scope_min_manual_hooks_v1.4.patch ./manual_hooks.patch
+          # patch -p1 --fuzz=3 < ./manual_hooks.patch
+          curl -Ls "https://raw.githubusercontent.com/fatalcoder524/kernel_patches_additional/refs/heads/wild-main/next/scope_min_manual_hooks_v1.4.patch" | patch -p1
 
       - name: Apply Hide Stuff Patches
         run: |
